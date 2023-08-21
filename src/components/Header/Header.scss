@@ -1,4 +1,4 @@
-.wrapper {
+.wrapper-header {
   background: #ffffff;
 }
 .header {
@@ -10,25 +10,39 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  a {
+    color: #262626;
+    text-decoration: none;
+  }
 }
 
 .nav {
   display: flex;
   column-gap: 20px;
-  &__item {
+  a .nav__item {
     font-family: 'Inter Regular', sans-serif;
     font-size: 18px;
     padding: 10px 18px;
     border: none;
     background: none;
     cursor: pointer;
+    color: #262626;
+    &:hover {
+      opacity: 0.7;
+      color: #1890ff;
+    }
   }
-  &__item:last-child {
+  a:last-child .nav__item {
     font-family: 'Inter Regular', sans-serif;
     font-size: 18px;
     padding: 10px 18px;
     border: 1px solid #52c41a;
     color: #52c41a;
     border-radius: 5px;
+    &:hover {
+      opacity: 0.7;
+      color: #1890ff;
+      border: 1px solid #1890ff;
+    }
   }
 }
