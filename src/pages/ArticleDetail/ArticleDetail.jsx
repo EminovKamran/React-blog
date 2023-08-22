@@ -2,6 +2,7 @@ import ReactMarkdown from 'react-markdown';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { format, parseISO } from 'date-fns';
+import uniqid from 'uniqid';
 
 function ArticleDetail() {
   const articles = useSelector((state) => state.article.articles);
@@ -18,9 +19,10 @@ function ArticleDetail() {
         <ul className='column-one'>
           <li className='article__title'>{title}</li>
           <li className='article__tag'>
-            {/* eslint-disable-next-line no-shadow */}
             {tagList.map((item) => (
-              <li className='tag-name'>{item}</li>
+              <span key={uniqid()} className='tag-name'>
+                {item}
+              </span>
             ))}
           </li>
           <li className='article__description'>{description}</li>

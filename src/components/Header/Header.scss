@@ -27,6 +27,12 @@
     background: none;
     cursor: pointer;
     color: #262626;
+    img {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 1px solid #b35f5f;
+    }
     &:hover {
       opacity: 0.7;
       color: #1890ff;

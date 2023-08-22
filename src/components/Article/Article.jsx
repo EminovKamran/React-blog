@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
+import uniqid from 'uniqid';
 
 import './Article.scss';
 
@@ -25,7 +26,9 @@ export default function Article({ item }) {
         <li className='article__tag'>
           {/* eslint-disable-next-line no-shadow */}
           {tagList.map((item) => (
-            <li className='tag-name'>{item}</li>
+            <span key={uniqid()} className='tag-name'>
+              {item}
+            </span>
           ))}
         </li>
         <li className='article__description'>{description}</li>

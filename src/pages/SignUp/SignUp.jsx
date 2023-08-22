@@ -1,15 +1,16 @@
+import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import LinearProgress from '@mui/material/LinearProgress';
-import Alert from '@mui/material/Alert';
-import { AlertTitle } from '@mui/material';
 
-import { fetchSignUp } from '../../api/auth';
+import { loginAction, setUser } from '../../store/reducers/userReducer';
+import { fetchSignIn, fetchSignUp } from '../../api/user';
 
 import './SignUp.scss';
 
 function SignUp() {
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -17,7 +18,6 @@ function SignUp() {
     formState: { errors },
   } = useForm({ mode: 'onChange' });
 
-  const [alert, setAlert] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [check, setCheck] = useState(false);
   const history = useNavigate();
@@ -33,41 +33,40 @@ function SignUp() {
     return null;
   }; /// вынести в отдельный файл
 
-  function submitForm(data) {
+  async function submitForm(data) {
     setIsLoading(true);
-    if (check) {
-      setTimeout(() => {
-        fetchSignUp({ user: data });
-        setAlert(true);
-        setTimeout(() => {
-          history('/sign-in');
-          setIsLoading(false);
-        }, 2000);
-      }, 3000);
+    const responseUp = await fetchSignUp({ user: data });
+    dispatch(
+      setUser({
+        username: data.username,
+        email: data.email,
+        bio: 'start up',
+        image: 'https://static.productionready.io/images/smiley-cyrus.jpg',
+      }),
+    );
+    if (responseUp !== undefined) {
+      localStorage.setItem(
+        'currentUser',
+        JSON.stringify(responseUp.user.token),
+      );
+      await fetchSignIn({
+        user: {
+          email: data.email,
+          password: data.password,
+        },
+      });
     }
+    dispatch(loginAction(true));
+    history('/');
+    setIsLoading(false);
   }
 
   return (
     <>
-      {alert && (
-        <Alert
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            width: '30%',
-            justifyContent: 'center',
-            margin: '0 auto',
-            marginTop: '20px',
-          }}
-          severity='success'
-        >
-          <AlertTitle>Success</AlertTitle>
-          You have created an account
-        </Alert>
-      )}
+      {isLoading && <LinearProgress color='secondary' />}
       <div className={`wrapper-form ${isLoading ? 'active' : ''}`}>
         <div className='form-container'>
-          <span>Create new account</span>
+          <span className='form__name'>Create new account</span>
           <form className='form' onSubmit={handleSubmit(submitForm)}>
             <label className='form__label'>
               Username
@@ -161,7 +160,6 @@ function SignUp() {
               disabled={!check || isLoading}
             />
           </form>
-          {isLoading && <LinearProgress color='secondary' />}
         </div>
       </div>
     </>
