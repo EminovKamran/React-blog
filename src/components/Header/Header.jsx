@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { loginAction } from '../../store/reducers/userReducer';
@@ -7,12 +7,15 @@ import './Header.scss';
 
 export default function Header() {
   const dispatch = useDispatch();
+  const history = useNavigate();
+
   const isLogIn = useSelector((state) => state.user.isLogIn);
   const user = useSelector((state) => state.user.user);
 
   const handleLogOut = () => {
     dispatch(loginAction(false));
     localStorage.removeItem('currentUser');
+    history('/');
   };
 
   return (
@@ -24,7 +27,7 @@ export default function Header() {
         <div className='nav'>
           {isLogIn && (
             <>
-              <Link to='/edit-profile-page'>
+              <Link to='/profile'>
                 <button
                   style={
                     isLogIn && {

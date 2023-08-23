@@ -18,8 +18,9 @@ function SignIn() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isValid },
-  } = useForm();
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({});
 
   const [isLoading, setIsLoading] = useState(false);
   const [alert, setAlert] = useState(false);
@@ -45,6 +46,7 @@ function SignIn() {
       history('/');
     } else {
       setAlert(true);
+      reset();
     }
     setIsLoading(false);
   }
@@ -74,29 +76,32 @@ function SignIn() {
           <form className='form' onSubmit={handleSubmit(submitForm)}>
             <label className='form__label'>Email address</label>
             <input
-              {...register('email', {
-                required: 'input empty',
-              })}
+              {...register('email')}
               type='email'
               className='form__input'
               placeholder='Email address'
+              onChange={(e) => {
+                // eslint-disable-next-line no-unused-expressions
+                e.target.value !== '' && setAlert(false);
+              }}
             />
             {getErrorMessage('email')}
             <label className='form__label'>Password</label>
             <input
-              {...register('password', {
-                required: 'input empty',
-              })}
+              {...register('password')}
               type='password'
               className='form__input'
               placeholder='Password'
+              onChange={(e) => {
+                // eslint-disable-next-line no-unused-expressions
+                e.target.value !== '' && setAlert(false);
+              }}
             />
             {getErrorMessage('password')}
             <input
               className='button'
               type='submit'
               value={isSubmitting ? 'Loading...' : 'Login'}
-              disabled={!isValid}
             />
           </form>
         </div>

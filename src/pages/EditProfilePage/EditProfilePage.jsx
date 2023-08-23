@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { fetchEditProfile } from '../../api/user';
 import { updateUserDataAction } from '../../store/reducers/userReducer';
@@ -8,6 +9,7 @@ import './EditProfilePage.scss';
 
 function EditProfilePage() {
   const dispatch = useDispatch();
+  const history = useNavigate();
   const user = useSelector((state) => state.user.user);
   const { register, handleSubmit } = useForm({});
   const token = JSON.parse(localStorage.getItem('currentUser'));
@@ -15,6 +17,7 @@ function EditProfilePage() {
   async function submitForm(data) {
     const responseEdit = await fetchEditProfile({ user: data }, token);
     dispatch(updateUserDataAction(responseEdit.user));
+    history('/');
   }
 
   return (

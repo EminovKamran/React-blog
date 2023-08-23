@@ -43,3 +43,18 @@ export async function fetchEditProfile(body, token) {
   const json = await response.json();
   return json;
 }
+
+export async function fetchGetProfile(token) {
+  const options = {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      accept: 'application/json',
+      'Content-Type': 'application/json;charset=utf-8',
+    },
+    body: null,
+  };
+  const response = await fetch('https://blog.kata.academy/api/user', options);
+  const json = await response.json();
+  return json;
+}
