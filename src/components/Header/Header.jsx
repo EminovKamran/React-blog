@@ -27,6 +27,15 @@ export default function Header() {
         <div className='nav'>
           {isLogIn && (
             <>
+              <Link to='/new-article'>
+                <button
+                  style={{ padding: '5px' }}
+                  type='button'
+                  className='nav__item create__article'
+                >
+                  create article{' '}
+                </button>
+              </Link>
               <Link to='/profile'>
                 <button
                   style={

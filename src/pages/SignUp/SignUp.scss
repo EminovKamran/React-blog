@@ -2,17 +2,16 @@
   padding: 25px 0;
   font-family: 'Roboto Medium', sans-serif;
   font-size: 20px;
-  width: 40%;
   margin: 0 auto;
   &.active {
     opacity: 0.5;
   }
 }
 .form-container {
-  width: 100%;
+  max-width: 500px;
   margin: 0 auto;
-  height: 599px;
-  padding: 0 32px;
+  height: 100%;
+  padding: 32px;
   display: flex;
   flex-direction: column;
   justify-content: center;

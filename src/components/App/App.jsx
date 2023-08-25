@@ -5,9 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import ArticlesList from '../ArticleList';
 import Header from '../Header';
 import ArticleDetail from '../../pages/ArticleDetail';
+import CreateNewArticle from '../../pages/CreateNewArticle';
 import SignUp from '../../pages/SignUp';
 import SignIn from '../../pages/SignIn';
 import EditProfilePage from '../../pages/EditProfilePage';
+import EditArticle from '../../pages/EditArticle';
 import { fetchGetProfile } from '../../api/user';
 import { loginAction, setUser } from '../../store/reducers/userReducer';
 
@@ -38,10 +40,12 @@ export default function App() {
       <Header />
       <Routes>
         <Route path='/' element={<ArticlesList />} />
-        <Route path='/article/:slug' element={<ArticleDetail />} />
         <Route path='/sign-in' element={<SignIn />} />
         <Route path='/sign-up' element={<SignUp />} />
+        <Route path='/article/:slug' element={<ArticleDetail />} />
         <Route path='/profile' element={<EditProfilePage />} />
+        <Route path='/new-article' element={<CreateNewArticle />} />
+        <Route path='/articles/:slug/edit' element={<EditArticle />} />
       </Routes>
     </div>
   );

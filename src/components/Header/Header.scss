@@ -19,6 +19,7 @@
 .nav {
   display: flex;
   column-gap: 20px;
+  align-items: center;
   a .nav__item {
     font-family: 'Inter Regular', sans-serif;
     font-size: 18px;
@@ -38,6 +39,7 @@
       color: #1890ff;
     }
   }
+  a:first-child .nav__item.create__article,
   a:last-child .nav__item {
     font-family: 'Inter Regular', sans-serif;
     font-size: 18px;
