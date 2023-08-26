@@ -17,18 +17,8 @@ function CreateNewArticle() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [tags, setTags] = useState([]);
+  const [primitiveString, setPrimitiveString] = useState({ tag: '' });
   const history = useNavigate();
-
-  const getErrorMessage = (field) => {
-    if (errors[field]) {
-      return (
-        <span className='form__message' style={{ color: 'red' }}>
-          {errors[field].message}
-        </span>
-      );
-    }
-    return null;
-  };
 
   const submitForm = (data) => {
     setIsLoading(true);
@@ -39,7 +29,15 @@ function CreateNewArticle() {
   };
 
   const handleAddTag = (tag) => {
+    if (!primitiveString.tag.trim()) {
+      return;
+    }
     setTags([...tags, tag]);
+  };
+
+  const handleDeleteTag = (index) => {
+    const newTags = tags.filter((_, ind) => ind !== index);
+    setTags(newTags);
   };
 
   return (
@@ -61,7 +59,11 @@ function CreateNewArticle() {
                 required: 'empty',
               })}
             />
-            {getErrorMessage('title')}
+            {errors.title && (
+              <span className='form__message' style={{ color: 'red' }}>
+                {errors.title.message}
+              </span>
+            )}
           </label>
           <label className='form__label'>
             Short description
@@ -69,9 +71,15 @@ function CreateNewArticle() {
               type='text'
               className='form__input'
               placeholder='Short description'
-              {...register('description')}
+              {...register('description', {
+                required: 'empty',
+              })}
             />
-            {getErrorMessage('description')}
+            {errors.description && (
+              <span className='form__message' style={{ color: 'red' }}>
+                {errors.description.message}
+              </span>
+            )}
           </label>
           <label className='form__label'>
             Text
@@ -79,9 +87,15 @@ function CreateNewArticle() {
               type='text'
               className='form__input'
               placeholder='Text'
-              {...register('body')}
+              {...register('body', {
+                required: 'empty',
+              })}
             />
-            {getErrorMessage('body')}
+            {errors.body && (
+              <span className='form__message' style={{ color: 'red' }}>
+                {errors.body.message}
+              </span>
+            )}
           </label>
         </form>
         <form
@@ -99,14 +113,23 @@ function CreateNewArticle() {
               name='tag'
               className='form__input'
               placeholder='Tag'
+              onChange={(e) => {
+                const trimmedValue = e.target.value.trim();
+                setPrimitiveString({ tag: trimmedValue });
+              }}
+              required
             />
           </label>
           <input className='button tag' type='submit' value='Add tag' />
         </form>
-        {tags.map((item) => (
+        {tags.map((item, ind) => (
           <div className='tags' key={uniqid()}>
             <span className='tags__name'>{item}</span>
-            <button className='tags__button' type='button'>
+            <button
+              className='tags__button'
+              type='button'
+              onClick={() => handleDeleteTag(ind)}
+            >
               Delete
             </button>
           </div>

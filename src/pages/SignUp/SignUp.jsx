@@ -2,7 +2,10 @@ import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 import LinearProgress from '@mui/material/LinearProgress';
+import Stack from '@mui/material/Stack';
 
 import { loginAction, setUser } from '../../store/reducers/userReducer';
 import { fetchSignIn, fetchSignUp } from '../../api/user';
@@ -15,27 +18,19 @@ function SignUp() {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm({ mode: 'onChange' });
 
   const [isLoading, setIsLoading] = useState(false);
   const [check, setCheck] = useState(false);
+  const [alert, setAlert] = useState(false);
   const history = useNavigate();
-
-  const getErrorMessage = (field) => {
-    if (errors[field]) {
-      return (
-        <span className='form__message' style={{ color: 'red' }}>
-          {errors[field].message}
-        </span>
-      );
-    }
-    return null;
-  }; /// вынести в отдельный файл
 
   async function submitForm(data) {
     setIsLoading(true);
     const responseUp = await fetchSignUp({ user: data });
+
     dispatch(
       setUser({
         username: data.username,
@@ -44,7 +39,15 @@ function SignUp() {
         image: 'https://static.productionready.io/images/smiley-cyrus.jpg',
       }),
     );
-    if (responseUp !== undefined) {
+
+    if (responseUp.errors) {
+      setAlert(true);
+      setIsLoading(false);
+      reset();
+      return;
+    }
+
+    if (responseUp) {
       localStorage.setItem(
         'currentUser',
         JSON.stringify(responseUp.user.token),
@@ -55,7 +58,9 @@ function SignUp() {
           password: data.password,
         },
       });
+      setAlert(false);
     }
+
     dispatch(loginAction(true));
     history('/');
     setIsLoading(false);
@@ -63,6 +68,22 @@ function SignUp() {
 
   return (
     <>
+      {alert && (
+        <Stack
+          sx={{
+            width: '50%',
+            display: 'flex',
+            margin: '0 auto',
+            marginTop: '20px',
+          }}
+          spacing={2}
+        >
+          <Alert severity='error'>
+            <AlertTitle>Error</AlertTitle>
+            Such a user already exists — <strong>try again!</strong>
+          </Alert>
+        </Stack>
+      )}
       {isLoading && <LinearProgress color='secondary' />}
       <div className={`wrapper-form ${isLoading ? 'active' : ''}`}>
         <div className='form-container'>
@@ -86,9 +107,17 @@ function SignUp() {
                 className='form__input'
                 placeholder='Username'
                 name='username'
+                onChange={(e) => {
+                  // eslint-disable-next-line no-unused-expressions
+                  e.target.value !== '' && setAlert(false);
+                }}
                 disabled={isLoading}
               />
-              {getErrorMessage('username')}
+              {errors.username && (
+                <span className='form__message' style={{ color: 'red' }}>
+                  {errors.username.message}
+                </span>
+              )}
             </label>
             <label className='form__label'>
               Email address
@@ -107,9 +136,17 @@ function SignUp() {
                 type='email'
                 className='form__input'
                 placeholder='Email address'
+                onChange={(e) => {
+                  // eslint-disable-next-line no-unused-expressions
+                  e.target.value !== '' && setAlert(false);
+                }}
                 disabled={isLoading}
               />
-              {getErrorMessage('email')}
+              {errors.email && (
+                <span className='form__message' style={{ color: 'red' }}>
+                  {errors.email.message}
+                </span>
+              )}
             </label>
             <label className='form__label'>
               Password
@@ -125,9 +162,17 @@ function SignUp() {
                     message: 'Password must have at least 8 characters',
                   },
                 })}
+                onChange={(e) => {
+                  // eslint-disable-next-line no-unused-expressions
+                  e.target.value !== '' && setAlert(false);
+                }}
                 disabled={isLoading}
               />
-              {getErrorMessage('password')}
+              {errors.password && (
+                <span className='form__message' style={{ color: 'red' }}>
+                  {errors.password.message}
+                </span>
+              )}
             </label>
             <label className='form__label'>
               Repeat Password
@@ -140,9 +185,17 @@ function SignUp() {
                   validate: (value) =>
                     value === watch('password') || 'The passwords do not match',
                 })}
+                onChange={(e) => {
+                  // eslint-disable-next-line no-unused-expressions
+                  e.target.value !== '' && setAlert(false);
+                }}
                 disabled={isLoading}
               />
-              {getErrorMessage('password_repeat')}
+              {errors.password_repeat && (
+                <span className='form__message' style={{ color: 'red' }}>
+                  {errors.password_repeat.message}
+                </span>
+              )}
             </label>
             <label className='personal-info'>
               <input

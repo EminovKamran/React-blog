@@ -4,15 +4,16 @@ import { useNavigate } from 'react-router-dom';
 
 import { fetchEditProfile } from '../../api/user';
 import { updateUserDataAction } from '../../store/reducers/userReducer';
+import { selectUser } from '../../store/selectors/selectors';
 
 import './EditProfilePage.scss';
 
 function EditProfilePage() {
   const dispatch = useDispatch();
   const history = useNavigate();
-  const user = useSelector((state) => state.user.user);
   const { register, handleSubmit } = useForm({});
   const token = JSON.parse(localStorage.getItem('currentUser'));
+  const user = useSelector(selectUser);
 
   async function submitForm(data) {
     const responseEdit = await fetchEditProfile({ user: data }, token);

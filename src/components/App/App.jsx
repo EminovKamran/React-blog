@@ -12,12 +12,13 @@ import EditProfilePage from '../../pages/EditProfilePage';
 import EditArticle from '../../pages/EditArticle';
 import { fetchGetProfile } from '../../api/user';
 import { loginAction, setUser } from '../../store/reducers/userReducer';
+import { selectUser } from '../../store/selectors/selectors';
 
 import './App.scss';
 
 export default function App() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.user);
+  const user = useSelector(selectUser);
 
   useEffect(() => {
     if (Object.keys(user).length === 0) {
@@ -27,7 +28,21 @@ export default function App() {
           const currentUser = await fetchGetProfile(StorageTokenAuth);
           if (currentUser) {
             dispatch(loginAction(true));
-            dispatch(setUser(currentUser.user));
+            if (
+              !{ ...currentUser.user }.bio &&
+              !{ ...currentUser.user }.image
+            ) {
+              dispatch(
+                setUser({
+                  ...currentUser.user,
+                  bio: 'start up',
+                  image:
+                    'https://static.productionready.io/images/smiley-cyrus.jpg',
+                }),
+              );
+            } else {
+              dispatch(setUser(currentUser.user));
+            }
           }
         };
         getCurrUserHandler();

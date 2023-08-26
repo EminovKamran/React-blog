@@ -6,25 +6,31 @@ import uniqid from 'uniqid';
 
 import Article from '../Article';
 import { fetchArticles } from '../../api/articles';
+import {
+  selectArticles,
+  selectArticlesCount,
+} from '../../store/selectors/selectors';
+
 import './ArticleList.scss';
 
 export default function ArticlesList() {
   const dispatch = useDispatch();
 
-  const articles = useSelector((state) => state.article.articles);
-  const articlesCount = useSelector((state) => state.article.articlesCount);
+  const articles = useSelector(selectArticles);
+  const articlesCount = useSelector(selectArticlesCount);
   const totalPages = Math.ceil(articlesCount / 5);
 
   const [isLoading, setIsLoading] = useState(false);
   const [offset, setOffset] = useState(1);
 
+  const token = JSON.parse(localStorage.getItem('currentUser'));
+
   useEffect(() => {
     setIsLoading(true);
-
-    dispatch(fetchArticles((offset - 1) * 5)).finally(() => {
+    dispatch(fetchArticles((offset - 1) * 5, token)).finally(() => {
       setIsLoading(false);
     });
-  }, [dispatch, offset]);
+  }, [dispatch, offset, token]);
 
   if (isLoading) {
     return <LinearProgress color='secondary' />;

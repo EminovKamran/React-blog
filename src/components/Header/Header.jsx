@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { selectUser, selectIsLogIn } from '../../store/selectors/selectors';
 import { loginAction } from '../../store/reducers/userReducer';
 
 import './Header.scss';
@@ -9,8 +10,8 @@ export default function Header() {
   const dispatch = useDispatch();
   const history = useNavigate();
 
-  const isLogIn = useSelector((state) => state.user.isLogIn);
-  const user = useSelector((state) => state.user.user);
+  const isLogIn = useSelector(selectIsLogIn);
+  const user = useSelector(selectUser);
 
   const handleLogOut = () => {
     dispatch(loginAction(false));

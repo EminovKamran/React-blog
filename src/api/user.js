@@ -1,3 +1,5 @@
+import { checkResponseStatus } from './articles';
+
 export async function fetchSignUp(body) {
   const options = {
     method: 'POST',
@@ -40,6 +42,9 @@ export async function fetchEditProfile(body, token) {
     body: JSON.stringify(body),
   };
   const response = await fetch('https://blog.kata.academy/api/user', options);
+  if (!response.ok) {
+    return checkResponseStatus(response);
+  }
   const json = await response.json();
   return json;
 }
@@ -55,6 +60,9 @@ export async function fetchGetProfile(token) {
     body: null,
   };
   const response = await fetch('https://blog.kata.academy/api/user', options);
+  if (!response.ok) {
+    return checkResponseStatus(response);
+  }
   const json = await response.json();
   return json;
 }

@@ -14,6 +14,7 @@ export default function EditArticle() {
   } = useForm({ mode: 'onChange' });
 
   const [isLoading, setIsLoading] = useState(false);
+  const [primitiveString, setPrimitiveString] = useState({ tag: '' });
   const [editArticle, setEditArticle] = useState();
   const [tags, setTags] = useState([]);
 
@@ -33,33 +34,34 @@ export default function EditArticle() {
 
   const { title, description, body } = editArticle.article;
 
-  const getErrorMessage = (field) => {
-    if (errors[field]) {
-      return (
-        <span className='form__message' style={{ color: 'red' }}>
-          {errors[field].message}
-        </span>
-      );
-    }
-    return null;
-  }; /// вынести в отдельный файл
-
-  const submitForm = (data) => {
+  const submitForm = async (data) => {
     setIsLoading(true);
     const token = JSON.parse(localStorage.getItem('currentUser'));
-    fetchEditArticle({ article: { ...data, tagList: tags } }, token, slug);
+    await fetchEditArticle(
+      { article: { ...data, tagList: tags } },
+      token,
+      slug,
+    );
     history(`/article/${slug}`);
     setIsLoading(false);
   };
 
   const handleAddTag = (tag) => {
+    if (!primitiveString.tag.trim()) {
+      return;
+    }
     setTags([...tags, tag]);
+  };
+
+  const handleDeleteTag = (index) => {
+    const newTags = tags.filter((_, ind) => ind !== index);
+    setTags(newTags);
   };
 
   return (
     <div className={`wrapper-form ${isLoading ? 'active' : ''}`}>
       <div className='form-container'>
-        <span>Create new article</span>
+        <span>Edit article</span>
         <form
           id='article-create-form'
           className='form'
@@ -78,7 +80,11 @@ export default function EditArticle() {
               disabled={isLoading}
               defaultValue={title}
             />
-            {getErrorMessage('title')}
+            {errors.title && (
+              <span className='form__message' style={{ color: 'red' }}>
+                {errors.title.message}
+              </span>
+            )}
           </label>
           <label className='form__label'>
             Short description
@@ -92,7 +98,11 @@ export default function EditArticle() {
               disabled={isLoading}
               defaultValue={description}
             />
-            {getErrorMessage('description')}
+            {errors.description && (
+              <span className='form__message' style={{ color: 'red' }}>
+                {errors.description.message}
+              </span>
+            )}
           </label>
           <label className='form__label'>
             Text
@@ -106,7 +116,11 @@ export default function EditArticle() {
               disabled={isLoading}
               defaultValue={body}
             />
-            {getErrorMessage('body')}
+            {errors.body && (
+              <span className='form__message' style={{ color: 'red' }}>
+                {errors.body.message}
+              </span>
+            )}
           </label>
         </form>
         <form
@@ -124,6 +138,11 @@ export default function EditArticle() {
               type='text'
               className='form__input'
               placeholder='Tag'
+              onChange={(e) => {
+                const trimmedValue = e.target.value.trim();
+                setPrimitiveString({ tag: trimmedValue });
+              }}
+              required
               disabled={isLoading}
             />
           </label>
@@ -131,10 +150,14 @@ export default function EditArticle() {
             Add tag
           </button>
         </form>
-        {tags.map((item) => (
+        {tags.map((item, ind) => (
           <div className='tags' key={uniqid()}>
             <span className='tags__name'>{item}</span>
-            <button className='tags__button' type='button'>
+            <button
+              className='tags__button'
+              type='button'
+              onClick={() => handleDeleteTag(ind)}
+            >
               Delete
             </button>
           </div>

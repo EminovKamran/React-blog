@@ -20,17 +20,10 @@ function SignIn() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm({});
+  } = useForm({ mode: 'onChange' });
 
   const [isLoading, setIsLoading] = useState(false);
   const [alert, setAlert] = useState(false);
-
-  const getErrorMessage = (field) => {
-    if (errors[field]) {
-      return <span style={{ color: 'red' }}>{errors[field].message}</span>;
-    }
-    return null;
-  }; /// вынести в отдельный файл
 
   async function submitForm(data) {
     setIsLoading(true);
@@ -76,7 +69,9 @@ function SignIn() {
           <form className='form' onSubmit={handleSubmit(submitForm)}>
             <label className='form__label'>Email address</label>
             <input
-              {...register('email')}
+              {...register('email', {
+                required: 'empty',
+              })}
               type='email'
               className='form__input'
               placeholder='Email address'
@@ -85,10 +80,16 @@ function SignIn() {
                 e.target.value !== '' && setAlert(false);
               }}
             />
-            {getErrorMessage('email')}
+            {errors.email && (
+              <span className='form__message' style={{ color: 'red' }}>
+                {errors.email.message}
+              </span>
+            )}
             <label className='form__label'>Password</label>
             <input
-              {...register('password')}
+              {...register('password', {
+                required: 'empty',
+              })}
               type='password'
               className='form__input'
               placeholder='Password'
@@ -97,7 +98,11 @@ function SignIn() {
                 e.target.value !== '' && setAlert(false);
               }}
             />
-            {getErrorMessage('password')}
+            {errors.password && (
+              <span className='form__message' style={{ color: 'red' }}>
+                {errors.password.message}
+              </span>
+            )}
             <input
               className='button'
               type='submit'
