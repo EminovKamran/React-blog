@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
@@ -10,6 +11,7 @@ import {
   fetchAddFavoriteArticle,
   fetchDeleteFavoriteArticle,
 } from '../../api/articles';
+import { selectIsLogIn } from '../../store/selectors/selectors';
 
 export default function Article({ item }) {
   const {
@@ -26,16 +28,19 @@ export default function Article({ item }) {
 
   const [favorited, setFavorited] = useState(initialFavorited);
   const [favoritesCount, setFavoritesCount] = useState(initialFavoritesCount);
+  const isLoginIn = useSelector(selectIsLogIn);
 
   const favoriteArticle = () => {
     const token = JSON.parse(localStorage.getItem('currentUser'));
-    if (favorited) {
-      fetchDeleteFavoriteArticle(slug, token);
-    } else {
-      fetchAddFavoriteArticle(slug, token);
+    if (isLoginIn) {
+      if (favorited) {
+        fetchDeleteFavoriteArticle(slug, token);
+      } else {
+        fetchAddFavoriteArticle(slug, token);
+      }
+      setFavorited(!favorited);
+      setFavoritesCount(favorited ? favoritesCount - 1 : favoritesCount + 1);
     }
-    setFavorited(!favorited);
-    setFavoritesCount(favorited ? favoritesCount - 1 : favoritesCount + 1);
   };
 
   return (

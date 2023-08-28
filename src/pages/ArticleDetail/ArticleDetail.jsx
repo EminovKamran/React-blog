@@ -15,7 +15,7 @@ import {
   fetchDeleteArticle,
   fetchDeleteFavoriteArticle,
 } from '../../api/articles';
-import { selectUser } from '../../store/selectors/selectors';
+import { selectIsLogIn, selectUser } from '../../store/selectors/selectors';
 
 import './ArticleDetail.scss';
 
@@ -29,6 +29,7 @@ function ArticleDetail() {
   const history = useNavigate();
 
   const user = useSelector(selectUser);
+  const isLoginIn = useSelector(selectIsLogIn);
 
   const token = JSON.parse(localStorage.getItem('currentUser'));
 
@@ -131,15 +132,17 @@ function ArticleDetail() {
                     type='button'
                     className='article__like'
                     onClick={() => {
-                      if (isLiked) {
-                        fetchDeleteFavoriteArticle(slug, token);
-                        setFavoritesCount(likeCount - 1);
+                      if (isLoginIn) {
+                        if (isLiked) {
+                          fetchDeleteFavoriteArticle(slug, token);
+                          setFavoritesCount(likeCount - 1);
+                        }
+                        if (!isLiked) {
+                          fetchAddFavoriteArticle(slug, token);
+                          setFavoritesCount(likeCount + 1);
+                        }
+                        setFavorited(!isLiked);
                       }
-                      if (!isLiked) {
-                        fetchAddFavoriteArticle(slug, token);
-                        setFavoritesCount(likeCount + 1);
-                      }
-                      setFavorited(!isLiked);
                     }}
                   >
                     {isLiked ? <span>❤️️</span> : <span>🤍</span>}
