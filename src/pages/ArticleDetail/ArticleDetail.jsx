@@ -184,8 +184,6 @@ function ArticleDetail() {
                   type='button'
                   onClick={() => {
                     setOpen(true);
-                    // fetchDeleteArticle(slug, token);
-                    // history('/');
                   }}
                 >
                   Delete
@@ -199,6 +197,9 @@ function ArticleDetail() {
           <ul className='column-two' />
         </div>
       </div>
+      <button type='button' className='go-back-btn' onClick={() => history(-1)}>
+        Back
+      </button>
     </>
   );
 }

@@ -2,10 +2,7 @@ import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
 import LinearProgress from '@mui/material/LinearProgress';
-import Stack from '@mui/material/Stack';
 
 import { loginAction, setUser } from '../../store/reducers/userReducer';
 import { fetchSignIn, fetchSignUp } from '../../api/user';
@@ -18,7 +15,6 @@ function SignUp() {
     register,
     handleSubmit,
     watch,
-    reset,
     formState: { errors },
   } = useForm({ mode: 'onChange' });
 
@@ -43,7 +39,6 @@ function SignUp() {
     if (responseUp.errors) {
       setAlert(true);
       setIsLoading(false);
-      reset();
       return;
     }
 
@@ -68,22 +63,6 @@ function SignUp() {
 
   return (
     <>
-      {alert && (
-        <Stack
-          sx={{
-            width: '50%',
-            display: 'flex',
-            margin: '0 auto',
-            marginTop: '20px',
-          }}
-          spacing={2}
-        >
-          <Alert severity='error'>
-            <AlertTitle>Error</AlertTitle>
-            Such a user already exists — <strong>try again!</strong>
-          </Alert>
-        </Stack>
-      )}
       {isLoading && <LinearProgress color='secondary' />}
       <div className={`wrapper-form ${isLoading ? 'active' : ''}`}>
         <div className='form-container'>
@@ -116,6 +95,11 @@ function SignUp() {
               {errors.username && (
                 <span className='form__message' style={{ color: 'red' }}>
                   {errors.username.message}
+                </span>
+              )}
+              {alert && (
+                <span className='form__message' style={{ color: 'red' }}>
+                  Such a user already exists — try again!
                 </span>
               )}
             </label>
@@ -158,8 +142,8 @@ function SignUp() {
                 {...register('password', {
                   required: 'You must specify a password',
                   minLength: {
-                    value: 8,
-                    message: 'Password must have at least 8 characters',
+                    value: 6,
+                    message: 'Password must have at least 6 characters',
                   },
                 })}
                 onChange={(e) => {

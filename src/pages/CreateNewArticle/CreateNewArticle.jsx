@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import LinearProgress from '@mui/material/LinearProgress';
 import uniqid from 'uniqid';
 
@@ -19,12 +19,18 @@ function CreateNewArticle() {
   const [tags, setTags] = useState([]);
   const [primitiveString, setPrimitiveString] = useState({ tag: '' });
   const history = useNavigate();
+  const { slug } = useParams();
 
   const submitForm = (data) => {
     setIsLoading(true);
     const token = JSON.parse(localStorage.getItem('currentUser'));
-    fetchArticleCreate({ article: { ...data, tagList: tags } }, token);
-    history('/');
+    fetchArticleCreate({ article: { ...data, tagList: tags } }, token).then(
+      (response) => {
+        history(`/article/${response.article.slug}`);
+      },
+    );
+
+    console.log(slug);
     setIsLoading(false);
   };
 
