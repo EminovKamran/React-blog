@@ -197,9 +197,6 @@ function ArticleDetail() {
           <ul className='column-two' />
         </div>
       </div>
-      <button type='button' className='go-back-btn' onClick={() => history(-1)}>
-        Back
-      </button>
     </>
   );
 }
