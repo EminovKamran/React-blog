@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import LinearProgress from '@mui/material/LinearProgress';
 import uniqid from 'uniqid';
 
@@ -19,7 +19,6 @@ function CreateNewArticle() {
   const [tags, setTags] = useState([]);
   const [primitiveString, setPrimitiveString] = useState({ tag: '' });
   const history = useNavigate();
-  const { slug } = useParams();
 
   const submitForm = (data) => {
     setIsLoading(true);
@@ -29,8 +28,6 @@ function CreateNewArticle() {
         history(`/article/${response.article.slug}`);
       },
     );
-
-    console.log(slug);
     setIsLoading(false);
   };
 

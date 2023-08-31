@@ -41,6 +41,19 @@ function ArticleDetail() {
     });
   }, [slug, token]);
 
+  useEffect(() => {
+    const handleClick = (e) => {
+      e.preventDefault();
+      history(-1);
+    };
+
+    window.addEventListener('popstate', handleClick);
+
+    return () => {
+      window.removeEventListener('popstate', handleClick);
+    };
+  }, [history]);
+
   if (!articleDetail) {
     return <LinearProgress color='secondary' />;
   }

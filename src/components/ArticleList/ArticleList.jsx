@@ -6,7 +6,9 @@ import uniqid from 'uniqid';
 
 import Article from '../Article';
 import { fetchArticles } from '../../api/articles';
+import { setArticleListOffset } from '../../store/reducers/articleReducer';
 import {
+  selectArticleListOffset,
   selectArticles,
   selectArticlesCount,
 } from '../../store/selectors/selectors';
@@ -18,19 +20,19 @@ export default function ArticlesList() {
 
   const articles = useSelector(selectArticles);
   const articlesCount = useSelector(selectArticlesCount);
+  const articleListOffset = useSelector(selectArticleListOffset);
   const totalPages = Math.ceil(articlesCount / 5);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [offset, setOffset] = useState(1);
 
   const token = JSON.parse(localStorage.getItem('currentUser'));
 
   useEffect(() => {
     setIsLoading(true);
-    dispatch(fetchArticles((offset - 1) * 5, token)).finally(() => {
+    dispatch(fetchArticles((articleListOffset - 1) * 5, token)).finally(() => {
       setIsLoading(false);
     });
-  }, [dispatch, offset, token]);
+  }, [dispatch, token, articleListOffset]);
 
   if (isLoading) {
     return <LinearProgress color='secondary' />;
@@ -43,11 +45,11 @@ export default function ArticlesList() {
       ))}
       <Pagination
         count={totalPages}
-        page={offset}
+        page={articleListOffset}
         variant='outlined'
         shape='rounded'
         color='secondary'
-        onChange={(_, page) => setOffset(page)}
+        onChange={(_, page) => dispatch(setArticleListOffset(page))}
       />
     </div>
   );
